@@ -1,0 +1,37 @@
+genotypecounter=function(files)
+{
+new=read.table(files,header=T)
+new1=new
+genotype=c("W","H","m")
+col_num=dim(new1)[2]
+row_num=dim(new1)[1]
+combination=3^col_num
+genotype_list=matrix(,combination,col_num)
+summary_list=array(0,combination)
+list=c()
+i=1
+for (jj in 1:col_num)
+{
+  list[1:3^(col_num-i)]="W"
+  list[(3^(col_num-i)+1):(2*3^(col_num-i))]="H"
+  list[(2*3^(col_num-i)+1):(3*3^(col_num-i))]="m"
+  list1=rep(list,3^(i-1))
+  genotype_list[,jj]=list1
+  i=i+1
+  list=c()
+}
+for (ii in 1:row_num)
+{
+  for (kk in 1:combination)
+  {
+    decision=new1[ii,]==genotype_list[kk,]
+   if (is.element(FALSE,decision)==FALSE)
+   {
+     summary_list[kk]=summary_list[kk]+1
+   }
+  }
+}
+colnames(genotype_list)=colnames(new)
+final_list=cbind(genotype_list,summary_list)
+return(final_list)
+}
